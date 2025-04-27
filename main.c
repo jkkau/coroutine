@@ -1,66 +1,37 @@
 #include <stdio.h>
-#include <stdlib.h>
-
-typedef void (*co_func)();
-
-typedef struct {
-	void *rsp;
-	void *rbp;
-	// void *eip;
-} co_context_t;
-
-#define STACK_SIZE 2 * 1024
-typedef struct {
-	co_context_t ctx;
-	void *stack;
-} coroutine_t;
-
-extern int swap(co_context_t *next_co, co_context_t *cur_co);
-
-void coroutine_init(coroutine_t *co, co_func f)
-{
-	posix_memalign(&co->stack, 16, STACK_SIZE);
-	*(void **)(co->stack + STACK_SIZE - sizeof(void *)) = (void *)f;
-	co->ctx.rsp = co->stack + STACK_SIZE - sizeof(void *);
-	co->ctx.rbp = NULL;
-}
-
-void coroutine_destroy(coroutine_t *co)
-{
-	if (co->stack != NULL) {
-		free(co->stack);
-	}
-}
+#include "co.h"
 
 coroutine_t coroutines[2];
-coroutine_t main_routine;
 
 void func0()
 {
-	printf("func0\n");
-	swap(&main_routine.ctx, &coroutines[0].ctx);
-
-	__builtin_unreachable();
+	printf("func0 step1\n");
+	co_yield();
+	printf("func0 step2\n");
 }
 
 void func1()
 {
-	printf("func1\n");
-	swap(&main_routine.ctx, &coroutines[1].ctx);
-
-	__builtin_unreachable();
+	printf("func1 step1\n");
+	co_yield();
+	printf("func1 step2\n");
 }
 
 int main()
 {
-	coroutine_init(&coroutines[0], func0);
-	coroutine_init(&coroutines[1], func1);
+	co_init(&coroutines[0], func0);
+	co_init(&coroutines[1], func1);
 
 	printf("start\n");
-	swap(&coroutines[0].ctx, &main_routine.ctx);
+	co_resume(&coroutines[0]);
+	co_resume(&coroutines[1]);
+	co_resume(&coroutines[0]);
 	printf("fun0 finished.\n");
-	swap(&coroutines[1].ctx, &main_routine.ctx);
+	co_resume(&coroutines[1]);
 	printf("func1 finished.\n");
+
+	co_destroy(&coroutines[0]);
+	co_destroy(&coroutines[1]);
 
 	return 0;
 }

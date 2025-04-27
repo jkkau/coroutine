@@ -1,9 +1,10 @@
 .text
 .p2align 4,,15
-.global swap
+.global _swap
 
+# int _swap(co_context_t *next_co, co_context_t *cur_co);
 # 该函数用于保存和回复rsp/rbp
-swap:
+_swap:
     # 把当前栈寄存器保存到swap的第二个参数
     # 保存栈寄存器
     movq %rsp, 0(%rsi)
