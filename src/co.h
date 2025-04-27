@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 typedef void (*co_func)();
 
 typedef struct {
@@ -11,6 +13,7 @@ typedef struct {
 	co_context_t ctx;
 	void *stack;
 	co_func func;
+	bool finished;
 } coroutine_t;
 
 void co_init(coroutine_t *co, co_func f);

@@ -18,16 +18,23 @@ static void _co_entry()
 	if (current && current->func) {
 		current->func();
 	}
+	current->finished = true;
 	_swap(&main_routine.ctx, &current->ctx);
+}
+
+static void _co_build_stack(coroutine_t *co)
+{
+	*(void **)(co->stack + STACK_SIZE - sizeof(void *)) = (void *)_co_entry;
+	co->ctx.rsp = co->stack + STACK_SIZE - sizeof(void *);
+	co->ctx.rbp = co->stack;
 }
 
 void co_init(coroutine_t *co, co_func f)
 {
 	posix_memalign(&co->stack, 16, STACK_SIZE);
-	*(void **)(co->stack + STACK_SIZE - sizeof(void *)) = (void *)_co_entry;
-	co->ctx.rsp = co->stack + STACK_SIZE - sizeof(void *);
-	co->ctx.rbp = NULL;
+	_co_build_stack(co);
 	co->func = f;
+	co->finished = false;
 }
 
 /*
@@ -36,6 +43,10 @@ void co_init(coroutine_t *co, co_func f)
 */
 void co_resume(coroutine_t *co)
 {
+	if (co->finished) {
+		_co_build_stack(co);
+		co->finished = false;
+	}
 	current = co;
 	_swap(&current->ctx, &main_routine.ctx);
 }

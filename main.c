@@ -30,6 +30,14 @@ int main()
 	co_resume(&coroutines[1]);
 	printf("func1 finished.\n");
 
+	printf("again\n");
+	co_resume(&coroutines[0]);
+	co_resume(&coroutines[1]);
+	co_resume(&coroutines[0]);
+	printf("fun0 finished.\n");
+	co_resume(&coroutines[1]);
+	printf("func1 finished.\n");
+
 	co_destroy(&coroutines[0]);
 	co_destroy(&coroutines[1]);
 
