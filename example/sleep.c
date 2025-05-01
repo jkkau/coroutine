@@ -35,8 +35,8 @@ int main()
 
 	timer_run();
 
-	// co_destroy(&coroutines[0]);
-	// co_destroy(&coroutines[1]);
+	co_destroy(&coroutines[0]);
+	co_destroy(&coroutines[1]);
 
 	return 0;
 }

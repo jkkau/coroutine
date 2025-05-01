@@ -11,7 +11,7 @@ typedef struct {
 	// void *eip;
 } co_context_t;
 
-#define STACK_SIZE 2 * 1024
+#define STACK_SIZE 10 * 1024
 typedef struct {
 	co_context_t ctx;
 	void *stack;
@@ -24,8 +24,6 @@ void co_resume(coroutine_t *co);
 void co_yield();
 void co_destroy(coroutine_t *co);
 void co_sleep(int ms);
-
-coroutine_t *get_current_co();
 
 // extern int swap(co_context_t *next_co, co_context_t *cur_co);
 extern coroutine_t main_routine;

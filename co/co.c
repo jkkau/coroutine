@@ -75,8 +75,3 @@ void co_sleep(int ms)
 	timer_add(current, ms);
 	co_yield();
 }
-
-coroutine_t *get_current_co()
-{
-	return current;
-}
