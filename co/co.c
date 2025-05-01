@@ -1,4 +1,5 @@
 #include "co.h"
+#include "timer/timer.h"
 #include <stdlib.h>
 #include <stdint.h>
 
@@ -65,5 +66,17 @@ void co_destroy(coroutine_t *co)
 {
 	if (co->stack != NULL) {
 		free(co->stack);
+		co->stack = NULL;
 	}
+}
+
+void co_sleep(int ms)
+{
+	timer_add(current, ms);
+	co_yield();
+}
+
+coroutine_t *get_current_co()
+{
+	return current;
 }

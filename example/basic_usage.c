@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "co.h"
+#include "co/co.h"
 
 coroutine_t coroutines[2];
 

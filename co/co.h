@@ -1,3 +1,6 @@
+#ifndef CO_H
+#define CO_H
+
 #include <stdbool.h>
 
 typedef void (*co_func)();
@@ -20,6 +23,11 @@ void co_init(coroutine_t *co, co_func f);
 void co_resume(coroutine_t *co);
 void co_yield();
 void co_destroy(coroutine_t *co);
+void co_sleep(int ms);
+
+coroutine_t *get_current_co();
 
 // extern int swap(co_context_t *next_co, co_context_t *cur_co);
 extern coroutine_t main_routine;
+
+#endif  // CO_H
