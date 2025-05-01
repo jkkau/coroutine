@@ -5,7 +5,7 @@ coroutine_t coroutines[2];
 
 void func0()
 {
-	printf("func0 step1\n");
+	printf("func0 step1, %d\n", 5);
 	co_yield();
 	printf("func0 step2\n");
 }

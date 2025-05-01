@@ -1,5 +1,6 @@
 #include "co.h"
 #include <stdlib.h>
+#include <stdint.h>
 
 extern int _swap(co_context_t *next_co, co_context_t *cur_co);
 
@@ -24,8 +25,11 @@ static void _co_entry()
 
 static void _co_build_stack(coroutine_t *co)
 {
-	*(void **)(co->stack + STACK_SIZE - sizeof(void *)) = (void *)_co_entry;
-	co->ctx.rsp = co->stack + STACK_SIZE - sizeof(void *);
+	uintptr_t top = (uintptr_t)(co->stack + STACK_SIZE - sizeof(void *));
+	// 让top变为可被0xF整除，达到rsp是16位字节对齐的目的
+	top = top & ~0xF;
+	*(void **)top = (void *)_co_entry;
+	co->ctx.rsp = (void *)top;
 	co->ctx.rbp = co->stack;
 }
 
