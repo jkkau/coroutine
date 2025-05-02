@@ -28,5 +28,5 @@ format:
 	astyle --style=kr --indent=force-tab=4 example/*.c co/*.c timer/*.c co/*.h timer/*.h
 
 clean:
-	rm -rf ./bin
-	rm co/*.orig timer/*.orig example/*.orig
+	- rm -rf ./bin
+	- rm co/*.orig timer/*.orig example/*.orig
